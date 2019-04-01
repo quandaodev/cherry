@@ -1,0 +1,20 @@
+{{ define "content" }}
+<p class="lead">
+  <a href="/post/new">Start a post</a>
+</p>
+
+{{ range . }}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <span class="lead"> <i class="fa fa-address-book-o"></i> {{ .Title }}</span>
+    </div>
+    <div class="panel-body">
+      {{ .Content }}
+      <div class="pull-right">
+        <a href="/post/read?id={{ .Id }}">Read more</a>
+      </div>
+    </div>
+  </div>
+{{ end }}
+
+{{ end }}

@@ -11,7 +11,7 @@ import (
 )
 
 func getDBClient() (client *mongo.Client) {
-	client, err := mongo.Connect(context.TODO(), "mongodb://quandao.me:27017")
+	client, err := mongo.Connect(context.TODO(), "mongodb://127.0.0.1:27017")
 
 	if err != nil {
 		log.Fatal(err)

@@ -1,26 +1,17 @@
 {{ define "navbar" }}
-<div class="navbar navbar-default navbar-static-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="/">
-        <i class="fa fa-address-book-o"></i>
-        Cherry Blog
-      </a>
-    </div>
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li><a href="/">Home</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="/login">Login</a></li>
-      </ul>
-    </div>
+<header class="sidebar" style="background-image: url(/static/images/blogCover.jpg)">
+  <div class="sidebar_inner">
+      <div class="sidebar_header">
+          <div class="sidebar_userimage" style="background-image: url(/static/images/blogLogo.jpg)"></div>
+          <h1 class="sidebar_title">Cherry blog</h1>
+      </div>
+      <div class="sidebar_symbols">
+          <a href="http://www.github.com" target="_blank" title="GitHub"><i class="fa fa-github-square fa-lg sidebar_symbol github_symbol"></i></a>
+          <a href="http://www.linkedin.com" target="_blank" title="LinkedIn"><i class="fa fa-linkedin-square fa-lg sidebar_symbol linkedin_symbol"></i></a>
+      </div>
+      <h2 class="sidebar_link"><a href="/">Blog</a></h2>
+      <h2 class="sidebar_link"><a href="/about">About</a></h2>
+      <h2 class="sidebar_link"><a href="/projects">Projects</a></h2>
   </div>
-</div>
+</header>
 {{ end }}

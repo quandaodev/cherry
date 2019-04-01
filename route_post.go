@@ -41,9 +41,9 @@ func readPost(writer http.ResponseWriter, request *http.Request) {
 		} else {
 			_, err := session(writer, request)
 			if err != nil {
-				generateHTML(writer, &thread, "layout", "public.navbar", "public.thread")
+				generateHTML(writer, &thread, "layout", "public.navbar", "public.post")
 			} else {
-				generateHTML(writer, &thread, "layout", "private.navbar", "private.thread")
+				generateHTML(writer, &thread, "layout", "private.navbar", "private.post")
 			}
 		}*/
 }

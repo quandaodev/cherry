@@ -23,7 +23,7 @@ func err(writer http.ResponseWriter, request *http.Request) {
 func index(writer http.ResponseWriter, request *http.Request) {
 	posts, err := data.Posts()
 	if err != nil {
-		error_message(writer, request, "Cannot get posts")
+		errorMessage(writer, request, "Cannot get posts")
 	} else {
 		//_, err := session(writer, request)
 		//if err != nil {

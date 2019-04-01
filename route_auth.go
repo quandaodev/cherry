@@ -24,7 +24,7 @@ func signup(writer http.ResponseWriter, request *http.Request) {
 func signupAccount(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if err != nil {
-		danger(err, "Cannot parse form")
+		logError(err, "Cannot parse form")
 	}
 	user := data.User{
 		Name:     request.PostFormValue("name"),
@@ -32,7 +32,7 @@ func signupAccount(writer http.ResponseWriter, request *http.Request) {
 		Password: request.PostFormValue("password"),
 	}
 	if err := user.Create(); err != nil {
-		danger(err, "Cannot create user")
+		logError(err, "Cannot create user")
 	}
 	http.Redirect(writer, request, "/login", 302)
 }

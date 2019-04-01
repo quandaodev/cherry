@@ -108,6 +108,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/mongodb/mongo-go-driver/bson",
+    "github.com/mongodb/mongo-go-driver/bson/primitive",
     "github.com/mongodb/mongo-go-driver/mongo",
   ]
   solver-name = "gps-cdcl"

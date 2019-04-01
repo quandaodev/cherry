@@ -48,7 +48,7 @@ func loadConfig() {
 }
 
 // Convenience function to redirect to the error message page
-func error_message(writer http.ResponseWriter, request *http.Request, msg string) {
+func errorMessage(writer http.ResponseWriter, request *http.Request, msg string) {
 	url := []string{"/err?msg=", msg}
 	http.Redirect(writer, request, strings.Join(url, ""), 302)
 }
@@ -89,17 +89,17 @@ func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 }
 
 // for logging
-func info(args ...interface{}) {
+func logInfo(args ...interface{}) {
 	logger.SetPrefix("INFO ")
 	logger.Println(args...)
 }
 
-func danger(args ...interface{}) {
+func logError(args ...interface{}) {
 	logger.SetPrefix("ERROR ")
 	logger.Println(args...)
 }
 
-func warning(args ...interface{}) {
+func logWarning(args ...interface{}) {
 	logger.SetPrefix("WARNING ")
 	logger.Println(args...)
 }

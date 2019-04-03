@@ -8,13 +8,20 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/quandaodev/cherry/model"
 )
 
+// Configuration contains global configuration of the website
 type Configuration struct {
-	Address      string
-	ReadTimeout  int64
-	WriteTimeout int64
-	Static       string
+	Address            string
+	ReadTimeout        int64
+	WriteTimeout       int64
+	Static             string
+	MongoServerAddress string
+	MongoUsername      string
+	MongoPassword      string
+	MongoDatabaseName  string
 }
 
 var config Configuration
@@ -32,6 +39,11 @@ func init() {
 		log.Fatalln("Failed to open log file", err)
 	}
 	logger = log.New(file, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
+
+	model.Config.ServerAddress = config.MongoServerAddress
+	model.Config.Username = config.MongoUsername
+	model.Config.Password = config.MongoPassword
+	model.Config.DatabaseName = config.MongoDatabaseName
 }
 
 func loadConfig() {

@@ -26,7 +26,7 @@ func main() {
 
 	// defined in route_post.go
 	//mux.HandleFunc("/post/create", createPost)
-	//mux.HandleFunc("/post/read", readPost)
+	mux.HandleFunc("/post", readPost)
 
 	// starting up the server
 	server := &http.Server{

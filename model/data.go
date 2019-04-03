@@ -1,4 +1,4 @@
-package data
+package model
 
 import (
 	"context"
@@ -7,12 +7,35 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mongodb/mongo-go-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func getDBClient() (client *mongo.Client) {
-	client, err := mongo.Connect(context.TODO(), "mongodb://127.0.0.1:27017")
+// DBClientConfig contains information to make the connection to MongoDB server
+type DBClientConfig struct {
+	Username      string
+	Password      string
+	ServerAddress string
+	DatabaseName  string
+}
 
+// Config is the Package variable that stores configuration
+var Config DBClientConfig
+
+func getDBClient() (client *mongo.Client) {
+	uri := fmt.Sprintf(`mongodb://%s:%s@%s/%s`,
+		Config.Username,
+		Config.Password,
+		Config.ServerAddress,
+		Config.DatabaseName)
+	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
+	//client, err := mongo.Connect(context.TODO(), "mongodb://cherry:yrrehc87*@quandao.me:27017")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = client.Connect(context.TODO())
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/quandaodev/cherry/data"
+	"github.com/quandaodev/cherry/model"
 )
 
 // GET /login
@@ -26,7 +26,7 @@ func signupAccount(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		logError(err, "Cannot parse form")
 	}
-	user := data.User{
+	user := model.User{
 		Name:     request.PostFormValue("name"),
 		Email:    request.PostFormValue("email"),
 		Password: request.PostFormValue("password"),

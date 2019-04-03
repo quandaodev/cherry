@@ -4,6 +4,12 @@
 *.dll
 *.so
 *.dylib
+*.log
+Gopkg.lock
+
+# folders
+/vendor/*
+/.vscode/*
 
 # Test binary, build with `go test -c`
 *.test

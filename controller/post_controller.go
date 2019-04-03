@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/quandaodev/cherry/model"
 )
 
 func createPost(writer http.ResponseWriter, request *http.Request) {
@@ -31,19 +33,16 @@ func createPost(writer http.ResponseWriter, request *http.Request) {
 // GET /thread/read
 // Show the details of the thread, including the posts and the form to write a post
 func readPost(writer http.ResponseWriter, request *http.Request) {
-	p("readPost - Not implemented")
-	/*
-		vals := request.URL.Query()
-		uuid := vals.Get("id")
-		thread, err := data.ThreadByUUID(uuid)
-		if err != nil {
-			error_message(writer, request, "Cannot read thread")
-		} else {
-			_, err := session(writer, request)
-			if err != nil {
-				generateHTML(writer, &thread, "layout", "public.navbar", "public.post")
-			} else {
-				generateHTML(writer, &thread, "layout", "private.navbar", "private.post")
-			}
-		}*/
+	vals := request.URL.Query()
+	postID := vals.Get("id")
+	post, err := model.GetPostByID(postID)
+	if err != nil {
+		errorMessage(writer, request, "Cannot read post")
+	} else {
+		//_, err := session(writer, request)
+		//if err != nil {
+		generateHTML(writer, &post, "layout", "public.navbar", "public.post")
+		//} else {
+		//generateHTML(writer, &post, "layout", "private.navbar", "private.post")
+	}
 }

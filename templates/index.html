@@ -6,20 +6,18 @@
 		<article itemscope itemtype="http://schema.org/BlogPosting" role="article" class="post_item">
 			<header class="post_item_header">
 				<h2 itemprop="name" class="post_item_title">
-					<a href="urltest" itemprop="url" data-pjax title="{{ .Title }}">
+					<a href="/post?id={{ .ID.Hex }}" itemprop="url" data-pjax title="{{ .Title }}">
 						{{ .Title }}
 					</a>
 				</h2>
 			</header>
 			<section itemprop="description" class="post_item_excerpt">
-				<p>{{ .Content }}&hellip;&nbsp;<a href="urltest" itemprop="url">»</a></p>
+				<p>{{ .Content }}&hellip;&nbsp;<a href="/post?id={{ .ID.Hex }}" itemprop="url">»</a></p>
 			</section>
 			<footer class="post_item_footer">
 				<ul class="post_item_meta_list">
 					<li class="post_item_meta_item">
-						<time datetime="2012-01-01" itemprop="datePublished">
-                24 days ago
-						</time>
+						<time datetime="2012-01-01" itemprop="datePublished">24 days ago </time>
 					</li>
 				</ul>
 			</footer>

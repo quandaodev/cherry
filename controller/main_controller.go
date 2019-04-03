@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/quandaodev/cherry/data"
+	"github.com/quandaodev/cherry/model"
 )
 
 // GET /err?msg=
@@ -21,7 +21,7 @@ func err(writer http.ResponseWriter, request *http.Request) {
 }
 
 func index(writer http.ResponseWriter, request *http.Request) {
-	posts, err := data.Posts()
+	posts, err := model.ListPosts()
 	if err != nil {
 		errorMessage(writer, request, "Cannot get posts")
 	} else {

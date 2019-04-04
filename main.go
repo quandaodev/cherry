@@ -14,7 +14,7 @@ func version() (v string) {
 }
 
 func main() {
-	utils.P("Personal blog", version(), "started at", utils.Config.Address)
+	utils.P("Cherry Personal Blog", version(), "started at", utils.Config.Address)
 
 	// handle static assets
 	mux := http.NewServeMux()
@@ -27,6 +27,8 @@ func main() {
 
 	// handle post
 	mux.HandleFunc("/post", controller.ReadPost)
+	mux.HandleFunc("/post/new", controller.NewPost)
+	mux.HandleFunc("/post/create", controller.CreatePost)
 
 	server := &http.Server{
 		Addr:           utils.Config.Address,

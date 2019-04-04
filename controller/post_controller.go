@@ -7,28 +7,34 @@ import (
 	"github.com/quandaodev/cherry/utils"
 )
 
-func createPost(writer http.ResponseWriter, request *http.Request) {
-	utils.P("createPost - Not implemented")
+// NewPost handles GET post/new to display the new post page
+func NewPost(writer http.ResponseWriter, request *http.Request) {
+	// TODO: check session
+	utils.GenerateHTML(writer, nil, "layout", "public.navbar", "new.post")
+}
+
+// CreatePost handles POST post/create to save the new post to database
+func CreatePost(writer http.ResponseWriter, request *http.Request) {
+	utils.P("CreatePost not implemented")
 	/*
-			sess, err := session(writer, request)
+		sess, err := session(writer, request)
+		if err != nil {
+			http.Redirect(writer, request, "/login", 302)
+		} else {
+			err = request.ParseForm()
 			if err != nil {
-				http.Redirect(writer, request, "/login", 302)
-			} else {
-				err = request.ParseForm()
-				if err != nil {
-					danger(err, "Cannot parse form")
-				}
-				user, err := sess.User()
-				if err != nil {
-					danger(err, "Cannot get user from session")
-				}
-				topic := request.PostFormValue("topic")
-				if _, err := user.CreateThread(topic); err != nil {
-					danger(err, "Cannot create thread")
-				}
-				http.Redirect(writer, request, "/", 302)
-		  }
-	*/
+				danger(err, "Cannot parse form")
+			}
+			user, err := sess.User()
+			if err != nil {
+				danger(err, "Cannot get user from session")
+			}
+			topic := request.PostFormValue("topic")
+			if _, err := user.CreateThread(topic); err != nil {
+				danger(err, "Cannot create thread")
+			}
+			http.Redirect(writer, request, "/", 302)
+		}*/
 }
 
 // ReadPost shows the details of the thread, including the posts and the form to write a post

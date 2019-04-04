@@ -1,13 +1,14 @@
 {{ define "content" }}
 
-<form role="form" action="/thread/create" method="post">
-  <div class="lead">Start a new thread with the following topic</div>
+<main class="content contentpost" role="main">
+  <form role="form" action="/post/create" method="post">
+  <h1>New post</h1>
   <div class="form-group">
-    <textarea class="form-control" name="topic" id="topic" placeholder="Thread topic here" rows="4"></textarea>
-    <br/>
-    <br/>
-    <button class="btn btn-lg btn-primary pull-right" type="submit">Start this thread</button>
+    <textarea name="title" id="title" placeholder="Title here" rows="2"></textarea><br/>
+    <textarea name="content" id="content" placeholder="Content here" rows="10"></textarea><br/>
+    <button type="submit">Save</button>
   </div>
 </form>
+</main>
 
 {{ end }}

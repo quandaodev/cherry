@@ -3,37 +3,36 @@ package main
 import (
 	"net/http"
 	"time"
+
+	"github.com/quandaodev/cherry/controller"
+	"github.com/quandaodev/cherry/utils"
 )
 
+func version() (v string) {
+	v = "0.1"
+	return
+}
+
 func main() {
-	p("Personal blog", version(), "started at", config.Address)
+	utils.P("Personal blog", version(), "started at", utils.Config.Address)
 
 	// handle static assets
 	mux := http.NewServeMux()
-	files := http.FileServer(http.Dir(config.Static))
+	files := http.FileServer(http.Dir(utils.Config.Static))
 	mux.Handle("/static/", http.StripPrefix("/static/", files))
 
-	// defined in route_main.go
-	mux.HandleFunc("/", index)
-	//mux.HandleFunc("/err", err)
+	// handle main pages
+	mux.HandleFunc("/", controller.HandleIndex)
+	mux.HandleFunc("/error", controller.HandleError)
 
-	// defined in route_auth.go
-	//mux.HandleFunc("/login", login)
-	//mux.HandleFunc("/logout", logout)
-	//mux.HandleFunc("/signup", signup)
-	//mux.HandleFunc("/signup_account", signupAccount)
-	//mux.HandleFunc("/authenticate", authenticate)
+	// handle post
+	mux.HandleFunc("/post", controller.ReadPost)
 
-	// defined in route_post.go
-	//mux.HandleFunc("/post/create", createPost)
-	mux.HandleFunc("/post", readPost)
-
-	// starting up the server
 	server := &http.Server{
-		Addr:           config.Address,
+		Addr:           utils.Config.Address,
 		Handler:        mux,
-		ReadTimeout:    time.Duration(config.ReadTimeout * int64(time.Second)),
-		WriteTimeout:   time.Duration(config.WriteTimeout * int64(time.Second)),
+		ReadTimeout:    time.Duration(utils.Config.ReadTimeout * int64(time.Second)),
+		WriteTimeout:   time.Duration(utils.Config.WriteTimeout * int64(time.Second)),
 		MaxHeaderBytes: 1 << 20,
 	}
 	server.ListenAndServe()

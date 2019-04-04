@@ -1,13 +1,14 @@
-package main
+package controller
 
 import (
 	"net/http"
 
 	"github.com/quandaodev/cherry/model"
+	"github.com/quandaodev/cherry/utils"
 )
 
 func createPost(writer http.ResponseWriter, request *http.Request) {
-	p("createPost - Not implemented")
+	utils.P("createPost - Not implemented")
 	/*
 			sess, err := session(writer, request)
 			if err != nil {
@@ -30,18 +31,17 @@ func createPost(writer http.ResponseWriter, request *http.Request) {
 	*/
 }
 
-// GET /thread/read
-// Show the details of the thread, including the posts and the form to write a post
-func readPost(writer http.ResponseWriter, request *http.Request) {
+// ReadPost shows the details of the thread, including the posts and the form to write a post
+func ReadPost(writer http.ResponseWriter, request *http.Request) {
 	vals := request.URL.Query()
 	postID := vals.Get("id")
 	post, err := model.GetPostByID(postID)
 	if err != nil {
-		errorMessage(writer, request, "Cannot read post")
+		utils.ErrorMessage(writer, request, "Cannot read post")
 	} else {
 		//_, err := session(writer, request)
 		//if err != nil {
-		generateHTML(writer, &post, "layout", "public.navbar", "public.post")
+		utils.GenerateHTML(writer, &post, "layout", "public.navbar", "public.post")
 		//} else {
 		//generateHTML(writer, &post, "layout", "private.navbar", "private.post")
 	}

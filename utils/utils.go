@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"encoding/json"
@@ -24,11 +24,13 @@ type Configuration struct {
 	MongoDatabaseName  string
 }
 
-var config Configuration
+// Config contains global configuration
+var Config Configuration
+
 var logger *log.Logger
 
-// Convenience function for printing to stdout
-func p(a ...interface{}) {
+// P is a convenience function for printing to stdout
+func P(a ...interface{}) {
 	fmt.Println(a...)
 }
 
@@ -40,10 +42,10 @@ func init() {
 	}
 	logger = log.New(file, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
 
-	model.Config.ServerAddress = config.MongoServerAddress
-	model.Config.Username = config.MongoUsername
-	model.Config.Password = config.MongoPassword
-	model.Config.DatabaseName = config.MongoDatabaseName
+	model.Config.ServerAddress = Config.MongoServerAddress
+	model.Config.Username = Config.MongoUsername
+	model.Config.Password = Config.MongoPassword
+	model.Config.DatabaseName = Config.MongoDatabaseName
 }
 
 func loadConfig() {
@@ -52,15 +54,15 @@ func loadConfig() {
 		log.Fatalln("Cannot open config file", err)
 	}
 	decoder := json.NewDecoder(file)
-	config = Configuration{}
-	err = decoder.Decode(&config)
+	Config = Configuration{}
+	err = decoder.Decode(&Config)
 	if err != nil {
 		log.Fatalln("Cannot get configuration from file", err)
 	}
 }
 
-// Convenience function to redirect to the error message page
-func errorMessage(writer http.ResponseWriter, request *http.Request, msg string) {
+// ErrorMessage is a convenience function to redirect to the error message page
+func ErrorMessage(writer http.ResponseWriter, request *http.Request, msg string) {
 	url := []string{"/err?msg=", msg}
 	http.Redirect(writer, request, strings.Join(url, ""), 302)
 }
@@ -78,9 +80,8 @@ func session(writer http.ResponseWriter, request *http.Request) (sess data.Sessi
 	return
 }*/
 
-// parse HTML templates
-// pass in a list of file names, and get a template
-func parseTemplateFiles(filenames ...string) (t *template.Template) {
+// ParseTemplateFiles gets in a list of file names and return a template
+func ParseTemplateFiles(filenames ...string) (t *template.Template) {
 	var files []string
 	t = template.New("layout")
 	for _, file := range filenames {
@@ -90,7 +91,8 @@ func parseTemplateFiles(filenames ...string) (t *template.Template) {
 	return
 }
 
-func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...string) {
+// GenerateHTML generates view output
+func GenerateHTML(writer http.ResponseWriter, data interface{}, filenames ...string) {
 	var files []string
 	for _, file := range filenames {
 		files = append(files, fmt.Sprintf("templates/%s.html", file))
@@ -100,23 +102,20 @@ func generateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 	templates.ExecuteTemplate(writer, "layout", data)
 }
 
-// for logging
-func logInfo(args ...interface{}) {
+// LogInfo is used to write INFO log
+func LogInfo(args ...interface{}) {
 	logger.SetPrefix("INFO ")
 	logger.Println(args...)
 }
 
-func logError(args ...interface{}) {
+// LogError is used to write ERROR log
+func LogError(args ...interface{}) {
 	logger.SetPrefix("ERROR ")
 	logger.Println(args...)
 }
 
-func logWarning(args ...interface{}) {
+// LogWarning is used to write WARNING log
+func LogWarning(args ...interface{}) {
 	logger.SetPrefix("WARNING ")
 	logger.Println(args...)
-}
-
-// version
-func version() string {
-	return "0.1"
 }

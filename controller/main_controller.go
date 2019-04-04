@@ -1,15 +1,16 @@
-package main
+package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/quandaodev/cherry/model"
+	"github.com/quandaodev/cherry/utils"
 )
 
-// GET /err?msg=
-// shows the error message page
-func err(writer http.ResponseWriter, request *http.Request) {
-	p("err - Not implemented")
+// HandleError shows the error message page
+func HandleError(writer http.ResponseWriter, request *http.Request) {
+	fmt.Println("err - Not implemented")
 	/*
 		vals := request.URL.Query()
 		_, err := session(writer, request)
@@ -20,14 +21,15 @@ func err(writer http.ResponseWriter, request *http.Request) {
 		}*/
 }
 
-func index(writer http.ResponseWriter, request *http.Request) {
+// HandleIndex shows the index page
+func HandleIndex(writer http.ResponseWriter, request *http.Request) {
 	posts, err := model.ListPosts()
 	if err != nil {
-		errorMessage(writer, request, "Cannot get posts")
+		utils.ErrorMessage(writer, request, "Cannot get posts")
 	} else {
 		//_, err := session(writer, request)
 		//if err != nil {
-		generateHTML(writer, posts, "layout", "public.navbar", "index")
+		utils.GenerateHTML(writer, posts, "layout", "public.navbar", "index")
 		//} else {
 		//	generateHTML(writer, posts, "layout", "private.navbar", "index")
 		//}

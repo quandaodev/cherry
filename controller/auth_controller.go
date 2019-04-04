@@ -1,22 +1,23 @@
-package main
+package controller
 
 import (
 	"net/http"
 
 	"github.com/quandaodev/cherry/model"
+	"github.com/quandaodev/cherry/utils"
 )
 
 // GET /login
 // Show the login page
 func login(writer http.ResponseWriter, request *http.Request) {
-	t := parseTemplateFiles("login.layout", "public.navbar", "login")
+	t := utils.ParseTemplateFiles("login.layout", "public.navbar", "login")
 	t.Execute(writer, nil)
 }
 
 // GET /signup
 // Show the signup page
 func signup(writer http.ResponseWriter, request *http.Request) {
-	generateHTML(writer, nil, "login.layout", "public.navbar", "signup")
+	utils.GenerateHTML(writer, nil, "login.layout", "public.navbar", "signup")
 }
 
 // POST /signup
@@ -24,7 +25,7 @@ func signup(writer http.ResponseWriter, request *http.Request) {
 func signupAccount(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if err != nil {
-		logError(err, "Cannot parse form")
+		utils.LogError(err, "Cannot parse form")
 	}
 	user := model.User{
 		Name:     request.PostFormValue("name"),
@@ -32,7 +33,7 @@ func signupAccount(writer http.ResponseWriter, request *http.Request) {
 		Password: request.PostFormValue("password"),
 	}
 	if err := user.Create(); err != nil {
-		logError(err, "Cannot create user")
+		utils.LogError(err, "Cannot create user")
 	}
 	http.Redirect(writer, request, "/login", 302)
 }
@@ -40,7 +41,7 @@ func signupAccount(writer http.ResponseWriter, request *http.Request) {
 // POST /authenticate
 // Authenticate the user given the email and password
 func authenticate(writer http.ResponseWriter, request *http.Request) {
-	p("Not implemented")
+	utils.P("Not implemented")
 	/*
 		err := request.ParseForm()
 		user, err := data.UserByEmail(request.PostFormValue("email"))
@@ -68,7 +69,7 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 // GET /logout
 // Logs the user out
 func logout(writer http.ResponseWriter, request *http.Request) {
-	p("Not implemented")
+	utils.P("Not implemented")
 	/*
 			cookie, err := request.Cookie("_cookie")
 			if err != http.ErrNoCookie {

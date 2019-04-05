@@ -4,11 +4,16 @@
   <form role="form" action="/post/create" method="post">
   <h1>New post</h1>
   <div class="form-group">
-    <textarea name="title" id="title" placeholder="Title here" rows="2"></textarea><br/>
-    <textarea name="content" id="content" placeholder="Content here" rows="10"></textarea><br/>
-    <button type="submit">Save</button>
+    <textarea class="justified" name="title" id="title" placeholder="Title" rows="1"></textarea><br/>
+    <textarea class = "justified" name="content" id="content" placeholder="Content" rows="10"></textarea><br/>
+    <button class="justified" type="submit">Save</button>
   </div>
 </form>
 </main>
 
+<script>
+  $(document).ready(function(){
+    $('#content').autosize();   
+});
+</script>
 {{ end }}

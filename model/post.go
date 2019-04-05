@@ -2,12 +2,12 @@ package model
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Post Struct
@@ -27,12 +27,14 @@ func (post *Post) CreatedAtDate() string {
 
 // Get all posts in the database and returns it
 func ListPosts() (posts []Post, err error) {
-	log.Println("listPosts() called")
+	log.Println("ListPosts() called")
 	client := getDBClient()
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	defer client.Disconnect(ctx)
 	collection := client.Database("cherry").Collection("posts")
-	cur, err := collection.Find(context.TODO(), bson.D{})
+	options := options.FindOptions{}
+	options.Sort = bson.D{{"_id", -1}}
+	cur, err := collection.Find(context.TODO(), bson.D{}, &options)
 	if err != nil {
 		log.Fatal("Find Err:", err)
 	}
@@ -43,19 +45,32 @@ func ListPosts() (posts []Post, err error) {
 		cur.Decode(&post)
 		posts = append(posts, post)
 	}
-	fmt.Printf("Found posts (array of pointers): %+v\n", posts)
 	return
 }
 
 // GetPostByID return a post matching the postID
 func GetPostByID(postID string) (post Post, err error) {
-	log.Println("getPostById(", postID, ") called")
+	log.Println("GetPostById(", postID, ") called")
 	client := getDBClient()
 	defer client.Disconnect(context.TODO())
 
 	collection := client.Database("cherry").Collection("posts")
 	id, _ := primitive.ObjectIDFromHex(postID)
 	collection.FindOne(context.TODO(), bson.D{{"_id", id}}).Decode(&post)
-	fmt.Println("Found post with ID ", postID, post)
+	return
+}
+
+// CreatePost inserts a new post to the database
+func CreatePost(newPost Post) (err error) {
+	log.Println("CreatePost called")
+	client := getDBClient()
+	defer client.Disconnect(context.TODO())
+
+	collection := client.Database("cherry").Collection("posts")
+	_, err = collection.InsertOne(context.TODO(), newPost)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return
 }

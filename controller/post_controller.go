@@ -15,26 +15,25 @@ func NewPost(writer http.ResponseWriter, request *http.Request) {
 
 // CreatePost handles POST post/create to save the new post to database
 func CreatePost(writer http.ResponseWriter, request *http.Request) {
-	utils.P("CreatePost not implemented")
-	/*
-		sess, err := session(writer, request)
-		if err != nil {
-			http.Redirect(writer, request, "/login", 302)
-		} else {
-			err = request.ParseForm()
-			if err != nil {
-				danger(err, "Cannot parse form")
-			}
-			user, err := sess.User()
-			if err != nil {
-				danger(err, "Cannot get user from session")
-			}
-			topic := request.PostFormValue("topic")
-			if _, err := user.CreateThread(topic); err != nil {
-				danger(err, "Cannot create thread")
-			}
-			http.Redirect(writer, request, "/", 302)
-		}*/
+	/*sess, err := session(writer, request)
+	if err != nil {
+		http.Redirect(writer, request, "/login", 302)
+	} else {
+	*/
+	err := request.ParseForm()
+	if err != nil {
+		utils.LogError("Cannot parse form", err)
+	}
+
+	var p model.Post
+	p.Title = request.PostFormValue("title")
+	p.Content = request.PostFormValue("content")
+
+	if err = model.CreatePost(p); err != nil {
+		utils.LogError("Cannot create post", err)
+	}
+	http.Redirect(writer, request, "/", 302)
+	//	}
 }
 
 // ReadPost shows the details of the thread, including the posts and the form to write a post

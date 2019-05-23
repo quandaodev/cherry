@@ -29,7 +29,6 @@ func getDBClient() (client *mongo.Client) {
 		Config.ServerAddress,
 		Config.DatabaseName)
 	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
-	//client, err := mongo.Connect(context.TODO(), "mongodb://cherry:yrrehc87*@quandao.me:27017")
 
 	if err != nil {
 		log.Fatal(err)

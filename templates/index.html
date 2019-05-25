@@ -6,13 +6,13 @@
 		<article itemscope itemtype="http://schema.org/BlogPosting" role="article" class="post_item">
 			<header class="post_item_header">
 				<h2 itemprop="name" class="post_item_title">
-					<a href="/post?id={{ .ID.Hex }}" itemprop="url" data-pjax title="{{ .Title }}">
+					<a href="/post?id={{ .Slug }}" itemprop="url" data-pjax title="{{ .Title }}">
 						{{ .Title }}
 					</a>
 				</h2>
 			</header>
 			<section itemprop="description" class="post_item_excerpt">
-				<p>{{ .Content }}&hellip;&nbsp;<a href="/post?id={{ .ID.Hex }}" itemprop="url">»</a></p>
+				<p>{{ .Content }}&hellip;&nbsp;<a href="/post?id={{ .Slug }}" itemprop="url">»</a></p>
 			</section>
 			<footer class="post_item_footer">
 				<ul class="post_item_meta_list">

@@ -1,117 +1,26 @@
 package model
 
 import (
-	"context"
-	"crypto/rand"
-	"crypto/sha1"
-	"fmt"
 	"log"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/net/context"
+
+	"cloud.google.com/go/firestore"
+	firebase "firebase.google.com/go"
+	"google.golang.org/api/option"
 )
 
-// DBClientConfig contains information to make the connection to MongoDB server
-type DBClientConfig struct {
-	Username      string
-	Password      string
-	ServerAddress string
-	DatabaseName  string
-}
+func getDBClient() (client *firestore.Client) {
 
-// Config is the Package variable that stores configuration
-var Config DBClientConfig
+	ctx := context.Background()
+	opt := option.WithCredentialsFile("serviceAccountKey.json")
 
-func getDBClient() (client *mongo.Client) {
-	uri := fmt.Sprintf(`mongodb://%s:%s@%s/%s`,
-		Config.Username,
-		Config.Password,
-		Config.ServerAddress,
-		Config.DatabaseName)
-	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
-
+	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("error initializing firebase app: %v\n", err)
 	}
 
-	err = client.Connect(context.TODO())
-	if err != nil {
-		log.Fatal(err)
-	}
-	return
-}
+	client, err = app.Firestore(ctx)
 
-/*
-func insertItem(client *mongo.Client) {
-	collection := client.Database("tutorial").Collection("users")
-	//peter := User{"Peter", 10}
-	//insertResult, err := collection.InsertOne(context.TODO(), peter)
-	//if err != nil {
-	//log.Fatal(err)
-	//}
-}
-
-
-func listItems(client *mongo.Client) {
-	collection := client.Database("tutorial").Collection("users")
-
-	// Pass these options to the Find method
-	//findOptions := options.Find()
-	//findOptions.SetLimit(2)
-
-	// Here's an array in which you can store the decoded documents
-	var results []*User
-
-	// Passing nil as the filter matches all documents in the collection
-	cur, err := collection.Find(context.TODO(), bson.D{}) //collection.Find(context.TODO(), nil, findOptions)
-	if err != nil {
-		log.Fatal("Find Err:", err)
-	}
-
-	// Finding multiple documents returns a cursor
-	// Iterating through the cursor allows us to decode documents one at a time
-	for cur.Next(context.TODO()) {
-		// create a value into which the single document can be decoded
-		var elem User
-		err := cur.Decode(&elem)
-		if err != nil {
-			log.Fatal("Decode Err:", err)
-		}
-		results = append(results, &elem)
-	}
-
-	if err := cur.Err(); err != nil {
-		log.Fatal("End Err:", err)
-	}
-	// Close the cursor once finished
-	cur.Close(context.TODO())
-
-	fmt.Printf("Found multiple documents (array of pointers): %+v\n", results)
-	//for i, v := range results {
-	//	fmt.Println("User ", i, ":", v.Name, " ", v.Age)
-	//}
-}*/
-
-// create a random UUID with from RFC 4122
-// adapted from http://github.com/nu7hatch/gouuid
-func createUUID() (uuid string) {
-	u := new([16]byte)
-	_, err := rand.Read(u[:])
-	if err != nil {
-		log.Fatalln("Cannot generate UUID", err)
-	}
-
-	// 0x40 is reserved variant from RFC 4122
-	u[8] = (u[8] | 0x40) & 0x7F
-	// Set the four most significant bits (bits 12 through 15) of the
-	// time_hi_and_version field to the 4-bit version number.
-	u[6] = (u[6] & 0xF) | (0x4 << 4)
-	uuid = fmt.Sprintf("%x-%x-%x-%x-%x", u[0:4], u[4:6], u[6:8], u[8:10], u[10:])
-	return
-}
-
-// hash plaintext with SHA-1
-func Encrypt(plaintext string) (cryptext string) {
-	cryptext = fmt.Sprintf("%x", sha1.Sum([]byte(plaintext)))
-	return
+	return client
 }

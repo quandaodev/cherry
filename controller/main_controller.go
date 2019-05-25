@@ -23,13 +23,15 @@ func HandleError(writer http.ResponseWriter, request *http.Request) {
 
 // HandleIndex shows the index page
 func HandleIndex(writer http.ResponseWriter, request *http.Request) {
-	posts, err := model.ListPosts()
+	//posts, err := model.ListPosts()
+	articles, err := model.ListArticles()
+	fmt.Println("size of ariticles ", len(articles))
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get posts")
 	} else {
 		//_, err := session(writer, request)
 		//if err != nil {
-		utils.GenerateHTML(writer, posts, "layout", "public.navbar", "index")
+		utils.GenerateHTML(writer, articles, "layout", "public.navbar", "index")
 		//} else {
 		//	generateHTML(writer, posts, "layout", "private.navbar", "index")
 		//}

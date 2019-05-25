@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/quandaodev/cherry/model"
 )
 
 // Configuration contains global configuration of the website
@@ -41,11 +39,6 @@ func init() {
 		log.Fatalln("Failed to open log file", err)
 	}
 	logger = log.New(file, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
-
-	model.Config.ServerAddress = Config.MongoServerAddress
-	model.Config.Username = Config.MongoUsername
-	model.Config.Password = Config.MongoPassword
-	model.Config.DatabaseName = Config.MongoDatabaseName
 }
 
 func loadConfig() {

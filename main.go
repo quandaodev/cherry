@@ -27,8 +27,10 @@ func main() {
 
 	// handle post
 	mux.HandleFunc("/post", controller.ReadPost)
-	mux.HandleFunc("/post/new", controller.NewPost)
-	mux.HandleFunc("/post/create", controller.CreatePost)
+	mux.HandleFunc("/post/new", controller.NewPost)       // UI
+	mux.HandleFunc("/post/create", controller.CreatePost) // Save
+	mux.HandleFunc("/post/edit", controller.EditPost)     // UI
+	mux.HandleFunc("/post/update", controller.UpdatePost) // Edit post
 
 	server := &http.Server{
 		Addr:           utils.Config.Address,

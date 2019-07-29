@@ -3,19 +3,40 @@ package model
 import (
 	"log"
 
+	"html/template"
+
 	"cloud.google.com/go/firestore"
 	"golang.org/x/net/context"
 	"google.golang.org/api/iterator"
 )
 
 // Article Struct
-type Article struct {
+type ArticleDB struct {
 	ID       string `firestore:"id,omitempty"`
 	Title    string `firestore:"title,omitempty"`
 	Markdown string `firestore:"markdown,omitempty"`
 	Content  string `firestore:"content,omitempty"`
 	Slug     string `firestore:"slug,omitempty"`
 	Created  string `firestore:"created,omitempty"`
+}
+
+type Article struct {
+	ID       string
+	Title    string
+	Markdown string
+	Content  template.HTML
+	Slug     string
+	Created  string
+}
+
+func convertArticleDBToArticle(adb ArticleDB) (a Article) {
+	a.ID = adb.ID
+	a.Title = adb.Title
+	a.Markdown = adb.Markdown
+	a.Content = template.HTML(adb.Content)
+	a.Slug = adb.Slug
+	a.Created = adb.Created
+	return
 }
 
 // List all articles in the database
@@ -34,9 +55,11 @@ func ListArticles() (articles []Article, err error) {
 		if err != nil {
 			log.Fatalf("Failed to iterate: %v", err)
 		}
-		var a Article
-		doc.DataTo(&a)
-		articles = append(articles, a)
+
+		var adb ArticleDB
+		doc.DataTo(&adb)
+
+		articles = append(articles, convertArticleDBToArticle(adb))
 	}
 
 	return
@@ -60,13 +83,15 @@ func GetArticleByID(id string) (at Article, err error) {
 		if err != nil {
 			log.Fatalf("Failed to iterate: %v", err)
 		}
-		doc.DataTo(&at)
+		var adb ArticleDB
+		doc.DataTo(&adb)
+		at = convertArticleDBToArticle(adb)
 	}
 	return
 }
 
 // CreateArticle inserts a new article to the database
-func CreateArticle(a Article) (err error) {
+func CreateArticle(a ArticleDB) (err error) {
 	log.Println("CreateArticle() called")
 	ctx := context.Background()
 	client := getDBClient()
@@ -80,7 +105,7 @@ func CreateArticle(a Article) (err error) {
 }
 
 // UpdateArticle update an article exists in the database
-func UpdateArticle(a Article) (err error) {
+func UpdateArticle(a ArticleDB) (err error) {
 	log.Println("UpdateArticle() called")
 	ctx := context.Background()
 	client := getDBClient()

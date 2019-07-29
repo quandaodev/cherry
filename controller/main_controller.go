@@ -25,7 +25,7 @@ func HandleError(writer http.ResponseWriter, request *http.Request) {
 func HandleIndex(writer http.ResponseWriter, request *http.Request) {
 	//posts, err := model.ListPosts()
 	articles, err := model.ListArticles()
-	fmt.Println("size of ariticles ", len(articles))
+	fmt.Println("Size of ariticles ", len(articles))
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get posts")
 	} else {

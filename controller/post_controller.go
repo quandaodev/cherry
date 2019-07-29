@@ -37,7 +37,7 @@ func UpdatePost(writer http.ResponseWriter, request *http.Request) {
 		utils.LogError("Cannot parse form", err)
 	}
 
-	var a model.Article
+	var a model.ArticleDB
 	a.Title = request.PostFormValue("title")
 	a.Slug = request.PostFormValue("slug")
 	a.Markdown = request.PostFormValue("markdown")
@@ -68,7 +68,7 @@ func CreatePost(writer http.ResponseWriter, request *http.Request) {
 		utils.LogError("Cannot parse form", err)
 	}
 
-	var a model.Article
+	var a model.ArticleDB
 	a.Title = request.PostFormValue("title")
 	a.Slug = request.PostFormValue("slug")
 	a.Markdown = request.PostFormValue("markdown")

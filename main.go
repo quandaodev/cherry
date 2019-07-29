@@ -25,6 +25,10 @@ func main() {
 	mux.HandleFunc("/", controller.HandleIndex)
 	mux.HandleFunc("/error", controller.HandleError)
 
+	mux.HandleFunc("/login", controller.HandleLogin)
+	mux.HandleFunc("/authenticate", controller.HandleAuthenticate)
+
+
 	// handle post
 	mux.HandleFunc("/post", controller.ReadPost)
 	mux.HandleFunc("/post/new", controller.NewPost)       // UI

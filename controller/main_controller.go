@@ -37,3 +37,19 @@ func HandleIndex(writer http.ResponseWriter, request *http.Request) {
 		//}
 	}
 }
+
+func HandleLogin(writer http.ResponseWriter, request *http.Request) {
+	fmt.Println("Login handler")
+	utils.GenerateHTML(writer, nil, "login.layout", "login")
+}
+
+func HandleAuthenticate(writer http.ResponseWriter, request *http.Request) {
+	fmt.Println("Authenticate handler")
+	err := request.ParseForm()
+	if err != nil {
+		utils.LogError("Cannot parse form", err)
+	}
+
+    username = request.PostFormValue("username")
+	password = request.PostFormValue("password")
+}

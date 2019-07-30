@@ -3,9 +3,11 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/quandaodev/cherry/model"
 	"github.com/quandaodev/cherry/utils"
+	"github.com/satori/go.uuid"
 )
 
 // HandleError shows the error message page
@@ -50,6 +52,22 @@ func HandleAuthenticate(writer http.ResponseWriter, request *http.Request) {
 		utils.LogError("Cannot parse form", err)
 	}
 
-    username = request.PostFormValue("username")
-	password = request.PostFormValue("password")
+	username := request.PostFormValue("username")
+	password := request.PostFormValue("password")
+
+	if username != "quan" || password != "quan123" {
+		writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	v4, _ := uuid.NewV4()
+	sessionToken := v4.String()
+
+	// Finally, we set the client cookie for "session_token" as the session token we just generated
+	// we also set an expiry time of 120 seconds, the same as the cache
+	http.SetCookie(writer, &http.Cookie{
+		Name:    "session_token",
+		Value:   sessionToken,
+		Expires: time.Now().Add(120 * time.Second),
+	})
 }

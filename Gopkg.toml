@@ -30,5 +30,5 @@
   unused-packages = true
 
 [[constraint]]
-  name = "go.mongodb.org/mongo-driver"
-  version = "1.0.0-rc1"
+  name = "github.com/gorilla/sessions"
+  version = "1.2.0"

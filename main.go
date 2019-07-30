@@ -27,7 +27,7 @@ func main() {
 
 	mux.HandleFunc("/login", controller.HandleLogin)
 	mux.HandleFunc("/authenticate", controller.HandleAuthenticate)
-
+	mux.HandleFunc("/logout", controller.HandleLogout)
 
 	// handle post
 	mux.HandleFunc("/post", controller.ReadPost)

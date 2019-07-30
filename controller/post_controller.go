@@ -15,23 +15,23 @@ func EditPost(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get article")
 	} else {
-		// TODO: check session
-		//if err != nil {
-		//_, err := session(writer, request)
-		utils.GenerateHTML(writer, article, "layout", "public.navbar", "edit.post")
-		//} else {
-		//	generateHTML(writer, posts, "layout", "private.navbar", "public.post")
-		//}
+		session, _ := Store.Get(request, "cookie-name")
+		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+			http.Redirect(writer, request, "/login", 302)
+		} else {
+			utils.GenerateHTML(writer, article, "layout", "private.navbar", "edit.post")
+		}
 	}
 }
 
 // UpdatePost handles POST update the post to database
 func UpdatePost(writer http.ResponseWriter, request *http.Request) {
-	/*sess, err := session(writer, request)
-	if err != nil {
+	session, _ := Store.Get(request, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(writer, request, "/login", 302)
-	} else {
-	*/
+		return
+	}
+
 	err := request.ParseForm()
 	if err != nil {
 		utils.LogError("Cannot parse form", err)
@@ -47,22 +47,27 @@ func UpdatePost(writer http.ResponseWriter, request *http.Request) {
 		utils.LogError("Cannot update article", err)
 	}
 	http.Redirect(writer, request, "/", 302)
-	//	}return
 }
 
 // NewPost handles GET post/new to display the new post page
 func NewPost(writer http.ResponseWriter, request *http.Request) {
-	// TODO: check session
+	session, _ := Store.Get(request, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		http.Redirect(writer, request, "/login", 302)
+		return
+	}
+
 	utils.GenerateHTML(writer, nil, "layout", "public.navbar", "new.post")
 }
 
 // CreatePost handles POST post/create to save the new post to database
 func CreatePost(writer http.ResponseWriter, request *http.Request) {
-	/*sess, err := session(writer, request)
-	if err != nil {
+	session, _ := Store.Get(request, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
 		http.Redirect(writer, request, "/login", 302)
-	} else {
-	*/
+		return
+	}
+
 	err := request.ParseForm()
 	if err != nil {
 		utils.LogError("Cannot parse form", err)
@@ -78,7 +83,6 @@ func CreatePost(writer http.ResponseWriter, request *http.Request) {
 		utils.LogError("Cannot create article", err)
 	}
 	http.Redirect(writer, request, "/", 302)
-	//	}
 }
 
 // ReadPost shows the details of the thread, including the posts and the form to write a post
@@ -89,11 +93,11 @@ func ReadPost(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get article")
 	} else {
-		//_, err := session(writer, request)
-		//if err != nil {
-		utils.GenerateHTML(writer, article, "layout", "public.navbar", "public.post")
-		//} else {
-		//	generateHTML(writer, posts, "layout", "private.navbar", "public.post")
-		//}
+		session, _ := Store.Get(request, "cookie-name")
+		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+			utils.GenerateHTML(writer, article, "layout", "public.navbar", "public.post")
+		} else {
+			utils.GenerateHTML(writer, article, "layout", "private.navbar", "public.post")
+		}
 	}
 }

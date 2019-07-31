@@ -3,8 +3,8 @@
     "ReadTimeout"    : 10,
     "WriteTimeout"   : 600,
     "Static"         : "public",
-    "MongoServerAddress" : "127.0.0.1",
-    "MongoUsername": "admin",
-    "MongoPassword": "password",
-    "MongoDatabaseName" : "cherry"
+    "SessionStore"   : "s59ccbf93-6f97-4d85-8322-4d0c411fdf12",
+    "LoginURL"       : "/login",
+    "Username"       : "admin",
+    "Password"       : "21232f297a57a5a743894a0e4a801fc3"
   }

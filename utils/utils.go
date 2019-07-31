@@ -12,14 +12,14 @@ import (
 
 // Configuration contains global configuration of the website
 type Configuration struct {
-	Address            string
-	ReadTimeout        int64
-	WriteTimeout       int64
-	Static             string
-	MongoServerAddress string
-	MongoUsername      string
-	MongoPassword      string
-	MongoDatabaseName  string
+	Address      string
+	ReadTimeout  int64
+	WriteTimeout int64
+	Static       string
+	SessionStore string
+	LoginURL     string
+	Username     string
+	Password     string
 }
 
 // Config contains global configuration

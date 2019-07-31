@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 
@@ -11,7 +13,7 @@ import (
 
 var (
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
-	key = []byte("s59ccbf93-6f97-4d85-8322-4d0c411fdf12")
+	key = []byte(utils.Config.SessionStore)
 	// Store is the session store
 	Store = sessions.NewCookieStore(key)
 )
@@ -68,14 +70,15 @@ func HandleAuthenticate(writer http.ResponseWriter, request *http.Request) {
 		utils.LogError("Cannot parse form", err)
 	}
 
-	//username := request.PostFormValue("username")
-	//password := request.PostFormValue("password")
+	username := request.PostFormValue("username")
+	b := md5.Sum([]byte(request.PostFormValue("password")))
+	password := hex.EncodeToString(b[:])
+	fmt.Println(password)
 
-	/*
-		if username != "" || password != "" {
-			writer.WriteHeader(http.StatusUnauthorized)
-			return
-		}*/
+	if username != utils.Config.Username || password != utils.Config.Password {
+		writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
 	session, _ := Store.Get(request, "cookie-name")
 	session.Values["authenticated"] = true

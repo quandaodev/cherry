@@ -11,7 +11,7 @@ import (
 )
 
 // Article Struct
-type ArticleDB struct {
+type PostDB struct {
 	ID       string `firestore:"id,omitempty"`
 	Title    string `firestore:"title,omitempty"`
 	Markdown string `firestore:"markdown,omitempty"`
@@ -20,7 +20,7 @@ type ArticleDB struct {
 	Created  string `firestore:"created,omitempty"`
 }
 
-type Article struct {
+type Post struct {
 	ID       string
 	Title    string
 	Markdown string
@@ -29,23 +29,23 @@ type Article struct {
 	Created  string
 }
 
-func convertArticleDBToArticle(adb ArticleDB) (a Article) {
-	a.ID = adb.ID
-	a.Title = adb.Title
-	a.Markdown = adb.Markdown
-	a.Content = template.HTML(adb.Content)
-	a.Slug = adb.Slug
-	a.Created = adb.Created
+func convertPostDBToPost(pdb PostDB) (p Post) {
+	p.ID = pdb.ID
+	p.Title = pdb.Title
+	p.Markdown = pdb.Markdown
+	p.Content = template.HTML(pdb.Content)
+	p.Slug = pdb.Slug
+	p.Created = pdb.Created
 	return
 }
 
-// List all articles in the database
-func ListArticles() (articles []Article, err error) {
-	log.Println("ListArticles() called")
+// List all posts in the database
+func ListPosts() (posts []Post, err error) {
+	log.Println("ListPosts() called")
 	ctx := context.Background()
 	client := getDBClient()
 
-	iter := client.Collection("articles").Documents(ctx)
+	iter := client.Collection("posts").Documents(ctx)
 	defer iter.Stop()
 	for {
 		doc, err := iter.Next()
@@ -56,22 +56,22 @@ func ListArticles() (articles []Article, err error) {
 			log.Fatalf("Failed to iterate: %v", err)
 		}
 
-		var adb ArticleDB
-		doc.DataTo(&adb)
+		var pdb PostDB
+		doc.DataTo(&pdb)
 
-		articles = append(articles, convertArticleDBToArticle(adb))
+		posts = append(posts, convertPostDBToPost(pdb))
 	}
 
 	return
 }
 
-// GetArticleByID return an article matching the id
-func GetArticleByID(id string) (at Article, err error) {
-	log.Println("GetArticleById() called")
+// GetPostByID return an article matching the id
+func GetPostByID(id string) (at Post, err error) {
+	log.Println("GetPostById() called")
 	ctx := context.Background()
 	client := getDBClient()
 
-	ats := client.Collection("articles")
+	ats := client.Collection("posts")
 	q := ats.Where("slug", "==", id)
 	iter := q.Documents(ctx)
 	defer iter.Stop()
@@ -83,35 +83,35 @@ func GetArticleByID(id string) (at Article, err error) {
 		if err != nil {
 			log.Fatalf("Failed to iterate: %v", err)
 		}
-		var adb ArticleDB
-		doc.DataTo(&adb)
-		at = convertArticleDBToArticle(adb)
+		var pdb PostDB
+		doc.DataTo(&pdb)
+		at = convertPostDBToPost(pdb)
 	}
 	return
 }
 
-// CreateArticle inserts a new article to the database
-func CreateArticle(a ArticleDB) (err error) {
-	log.Println("CreateArticle() called")
+// CreatePost inserts a new post to the database
+func CreatePost(p PostDB) (err error) {
+	log.Println("CreatePost() called")
 	ctx := context.Background()
 	client := getDBClient()
 
-	_, _, err = client.Collection("articles").Add(ctx, a)
+	_, _, err = client.Collection("posts").Add(ctx, p)
 	if err != nil {
-		log.Fatalf("Failed to create article: %v", err)
+		log.Fatalf("Failed to create post: %v", err)
 	}
 
 	return
 }
 
-// UpdateArticle update an article exists in the database
-func UpdateArticle(a ArticleDB) (err error) {
-	log.Println("UpdateArticle() called")
+// UpdatePost update an article exists in the database
+func UpdatePost(p PostDB) (err error) {
+	log.Println("UpdatePost() called")
 	ctx := context.Background()
 	client := getDBClient()
 
-	ats := client.Collection("articles")
-	q := ats.Where("slug", "==", a.Slug)
+	pts := client.Collection("posts")
+	q := pts.Where("slug", "==", p.Slug)
 	iter := q.Documents(ctx)
 	defer iter.Stop()
 	for {
@@ -124,12 +124,13 @@ func UpdateArticle(a ArticleDB) (err error) {
 		}
 		log.Println("Come here")
 		_, err = doc.Ref.Set(ctx, map[string]interface{}{
-			"title":   a.Title,
-			"content": a.Content}, firestore.MergeAll)
+			"title":    p.Title,
+			"content":  p.Content,
+			"markdown": p.Markdown}, firestore.MergeAll)
 	}
 
 	if err != nil {
-		log.Fatalf("Failed to update article: %v", err)
+		log.Fatalf("Failed to update post: %v", err)
 	}
 
 	return

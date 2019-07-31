@@ -32,7 +32,7 @@ func HandleError(writer http.ResponseWriter, request *http.Request) {
 
 // HandleIndex shows the index page
 func HandleIndex(writer http.ResponseWriter, request *http.Request) {
-	articles, err := model.ListArticles()
+	articles, err := model.ListPosts()
 	fmt.Println("Size of ariticles ", len(articles))
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get posts")

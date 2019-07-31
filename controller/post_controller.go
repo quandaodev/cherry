@@ -11,7 +11,7 @@ import (
 func EditPost(writer http.ResponseWriter, request *http.Request) {
 	params := request.URL.Query()
 	postID := params.Get("id")
-	article, err := model.GetArticleByID(postID)
+	article, err := model.GetPostByID(postID)
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get article")
 	} else {
@@ -37,13 +37,13 @@ func UpdatePost(writer http.ResponseWriter, request *http.Request) {
 		utils.LogError("Cannot parse form", err)
 	}
 
-	var a model.ArticleDB
+	var a model.PostDB
 	a.Title = request.PostFormValue("title")
 	a.Slug = request.PostFormValue("slug")
 	a.Markdown = request.PostFormValue("markdown")
 	a.Content = request.PostFormValue("content")
 
-	if err = model.UpdateArticle(a); err != nil {
+	if err = model.UpdatePost(a); err != nil {
 		utils.LogError("Cannot update article", err)
 	}
 	http.Redirect(writer, request, "/", 302)
@@ -73,13 +73,13 @@ func CreatePost(writer http.ResponseWriter, request *http.Request) {
 		utils.LogError("Cannot parse form", err)
 	}
 
-	var a model.ArticleDB
+	var a model.PostDB
 	a.Title = request.PostFormValue("title")
 	a.Slug = request.PostFormValue("slug")
 	a.Markdown = request.PostFormValue("markdown")
 	a.Content = request.PostFormValue("content")
 
-	if err = model.CreateArticle(a); err != nil {
+	if err = model.CreatePost(a); err != nil {
 		utils.LogError("Cannot create article", err)
 	}
 	http.Redirect(writer, request, "/", 302)
@@ -89,7 +89,7 @@ func CreatePost(writer http.ResponseWriter, request *http.Request) {
 func ReadPost(writer http.ResponseWriter, request *http.Request) {
 	params := request.URL.Query()
 	postID := params.Get("id")
-	article, err := model.GetArticleByID(postID)
+	article, err := model.GetPostByID(postID)
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get article")
 	} else {

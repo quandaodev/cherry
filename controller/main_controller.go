@@ -20,10 +20,9 @@ var (
 
 // HandleError shows the error message page
 func HandleError(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println("Handle error")
+	utils.LogInfo("HandleError() called")
 	vals := request.URL.Query()
-	session, _ := Store.Get(request, "cookie-name")
-	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+	if !HasSignedIn(request) {
 		utils.GenerateHTML(writer, vals.Get("msg"), "layout", "public.navbar", "error")
 	} else {
 		utils.GenerateHTML(writer, vals.Get("msg"), "layout", "private.navbar", "error")
@@ -32,13 +31,12 @@ func HandleError(writer http.ResponseWriter, request *http.Request) {
 
 // HandleIndex shows the index page
 func HandleIndex(writer http.ResponseWriter, request *http.Request) {
+	utils.LogInfo("HandleIndex() called")
 	articles, err := model.ListPosts()
-	fmt.Println("Size of ariticles ", len(articles))
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get posts")
 	} else {
-		session, _ := Store.Get(request, "cookie-name")
-		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		if !HasSignedIn(request) {
 			utils.GenerateHTML(writer, articles, "layout", "public.navbar", "index")
 		} else {
 			utils.GenerateHTML(writer, articles, "layout", "private.navbar", "index")
@@ -46,13 +44,15 @@ func HandleIndex(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+// HandleLogin shows the login page
 func HandleLogin(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println("Login handler")
+	utils.LogInfo("HandleLogin() called")
 	utils.GenerateHTML(writer, nil, "login.layout", "login")
 }
 
+// HandleLogout revoke the session and cookie
 func HandleLogout(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println("Login handler")
+	utils.LogInfo("HandleLogout() called")
 	session, _ := Store.Get(request, "cookie-name")
 
 	// Revoke users authentication
@@ -62,9 +62,9 @@ func HandleLogout(writer http.ResponseWriter, request *http.Request) {
 	http.Redirect(writer, request, "/", 302)
 }
 
+// HandleAuthenticate checks the username and password
 func HandleAuthenticate(writer http.ResponseWriter, request *http.Request) {
-	fmt.Println("Authenticate handler")
-
+	utils.LogInfo("HandleAuthenticate() called")
 	err := request.ParseForm()
 	if err != nil {
 		utils.LogError("Cannot parse form", err)
@@ -85,4 +85,21 @@ func HandleAuthenticate(writer http.ResponseWriter, request *http.Request) {
 	session.Save(request, writer)
 
 	http.Redirect(writer, request, "/", 302)
+}
+
+func CheckAndSignIn(writer http.ResponseWriter, request *http.Request) (loggedIn bool) {
+	loggedIn = HasSignedIn(request)
+	if !loggedIn {
+		http.Redirect(writer, request, utils.Config.LoginURL, 302)
+	}
+	return
+}
+
+func HasSignedIn(request *http.Request) (loggedIn bool) {
+	loggedIn = true
+	session, _ := Store.Get(request, "cookie-name")
+	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		loggedIn = false
+	}
+	return
 }

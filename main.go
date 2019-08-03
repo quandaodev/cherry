@@ -21,7 +21,7 @@ func main() {
 	files := http.FileServer(http.Dir(utils.Config.Static))
 	mux.Handle("/static/", http.StripPrefix("/static/", files))
 
-	// handle main pages
+	// handle index, error, authenticate
 	mux.HandleFunc("/", controller.HandleIndex)
 	mux.HandleFunc("/error", controller.HandleError)
 
@@ -30,11 +30,14 @@ func main() {
 	mux.HandleFunc("/logout", controller.HandleLogout)
 
 	// handle post
-	mux.HandleFunc("/post", controller.ReadPost)
-	mux.HandleFunc("/post/new", controller.NewPost)       // UI
-	mux.HandleFunc("/post/create", controller.CreatePost) // Save
-	mux.HandleFunc("/post/edit", controller.EditPost)     // UI
-	mux.HandleFunc("/post/update", controller.UpdatePost) // Edit post
+	mux.HandleFunc("/post", controller.HandleReadPost)
+	mux.HandleFunc("/post/new", controller.HandleNewPost)       // UI
+	mux.HandleFunc("/post/create", controller.HandleCreatePost) // Save
+	mux.HandleFunc("/post/edit", controller.HandleEditPost)     // UI
+	mux.HandleFunc("/post/update", controller.HandleUpdatePost) // Edit post
+
+	// handle page
+	mux.HandleFunc("/page", controller.HandleReadPage)
 
 	server := &http.Server{
 		Addr:           utils.Config.Address,

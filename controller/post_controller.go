@@ -7,22 +7,22 @@ import (
 	"github.com/quandaodev/cherry/utils"
 )
 
-// EditPost handles GET post/new to display the edit post page
-func EditPost(writer http.ResponseWriter, request *http.Request) {
-	utils.LogInfo("EditPost() called")
+// HandleEditPost handles GET post/new to display the edit post page
+func HandleEditPost(writer http.ResponseWriter, request *http.Request) {
+	utils.LogInfo("HandleEditPost() called")
 	params := request.URL.Query()
 	postID := params.Get("id")
-	article, err := model.GetPostByID(postID)
+	post, err := model.GetPostByID(postID)
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get post")
 	} else if CheckAndSignIn(writer, request) {
-		utils.GenerateHTML(writer, article, "layout", "private.navbar", "edit.post")
+		utils.GenerateHTML(writer, post, "layout", "private.navbar", "edit.post")
 	}
 }
 
-// UpdatePost handles POST update the post to database
-func UpdatePost(writer http.ResponseWriter, request *http.Request) {
-	utils.LogInfo("UpdatePost() called")
+// HandleUpdatePost handles POST update the post to database
+func HandleUpdatePost(writer http.ResponseWriter, request *http.Request) {
+	utils.LogInfo("HandleUpdatePost() called")
 	if CheckAndSignIn(writer, request) {
 		err := request.ParseForm()
 		if err != nil {
@@ -42,17 +42,17 @@ func UpdatePost(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-// NewPost handles GET post/new to display the new post page
-func NewPost(writer http.ResponseWriter, request *http.Request) {
-	utils.LogInfo("NewPost() called")
+// HandleNewPost handles GET post/new to display the new post page
+func HandleNewPost(writer http.ResponseWriter, request *http.Request) {
+	utils.LogInfo("HandleNewPost() called")
 	if CheckAndSignIn(writer, request) {
 		utils.GenerateHTML(writer, nil, "layout", "private.navbar", "new.post")
 	}
 }
 
-// CreatePost handles POST post/create to save the new post to database
-func CreatePost(writer http.ResponseWriter, request *http.Request) {
-	utils.LogInfo("CreatePost() called")
+// HandleCreatePost handles POST post/create to save the new post to database
+func HandleCreatePost(writer http.ResponseWriter, request *http.Request) {
+	utils.LogInfo("HandleCreatePost() called")
 	if CheckAndSignIn(writer, request) {
 		err := request.ParseForm()
 		if err != nil {
@@ -73,18 +73,18 @@ func CreatePost(writer http.ResponseWriter, request *http.Request) {
 }
 
 // ReadPost shows the details of the thread, including the posts and the form to write a post
-func ReadPost(writer http.ResponseWriter, request *http.Request) {
-	utils.LogInfo("ReadPost() called")
+func HandleReadPost(writer http.ResponseWriter, request *http.Request) {
+	utils.LogInfo("HandleReadPost() called")
 	params := request.URL.Query()
 	postID := params.Get("id")
-	article, err := model.GetPostByID(postID)
+	post, err := model.GetPostByID(postID)
 	if err != nil {
-		utils.ErrorMessage(writer, request, "Cannot get article")
+		utils.ErrorMessage(writer, request, "Cannot get post")
 	} else {
 		if !HasSignedIn(request) {
-			utils.GenerateHTML(writer, article, "layout", "public.navbar", "public.post")
+			utils.GenerateHTML(writer, post, "layout", "public.navbar", "public.post")
 		} else {
-			utils.GenerateHTML(writer, article, "layout", "private.navbar", "public.post")
+			utils.GenerateHTML(writer, post, "layout", "private.navbar", "public.post")
 		}
 	}
 }

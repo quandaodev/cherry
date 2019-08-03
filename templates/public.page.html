@@ -1,0 +1,25 @@
+{{ define "content" }}
+
+<main class="content contentpost" role="main">
+  <article class="contentpost_inner post" itemscope="" itemtype="http://schema.org/BlogPosting" role="article">
+      <span class="contentpost_meta"><a href="/tag/programming/">programming</a></span>
+      <h1 class="contentpost_headline post-title" itemprop="url" data-pjax="" title="{{ .ID}}">{{ .ID }}</h1>
+      <section class="contentpost_articlecontent post-content">
+          {{ .HTML}}
+      </section>
+      <footer class="contentpost_footer post-footer">
+        <!--
+            <section class="share">
+                <a href="/page/edit?id={{ .ID }}" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
+                <a href="/page/delete?id={{ .ID }}" title="Delete"><i class="fa fa-trash fa-lg"></i></a>
+            </section>
+            <div class="contentpost_footerbar">
+              <section class="contentpost_sidebar_meta clearfix">
+                  <h5>Published:</h5><time datetime="2019-03-07">07 Mar 2019</time>
+              </section>
+        </div> -->
+      </footer>
+  </article>
+</main>
+
+{{ end }}

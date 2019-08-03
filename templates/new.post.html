@@ -4,11 +4,14 @@
   <form role="form" name="form1" id="form1" action="/post/create" method="post">
   <h1>New post</h1>
   <div class="form-group">
-    <textarea class="justified" name="title" id="title" placeholder="Title" rows="1"></textarea>
-    <textarea class="justified" name="slug" id="slug" placeholder="Slug" rows="1"></textarea>
-    <textarea class = "justified" name="content" id="content" placeholder="Content"></textarea>
+    Title <input type="text" name="title" id="title" size="75" value="{{ .Title }}" /><br/>
+    Slug  <input type="text" name="slug" id="slug" size="75" value="{{.Slug}}"/><br/>
+    <textarea class="justified" name="content" id="content" placeholder="Content" rows="5">{{.Content}}</textarea><br/>
     <input type="hidden" name="html" id="html" />
-    <button class="justified" type="submit">Save</button>
+    <span class="justified" >
+      <button type="submit">Save</button>
+      <a href="/post?id={{ .Slug }}" title="Cancel">Cancel</a>
+    </span>
   </div>
 </form>
 </main>

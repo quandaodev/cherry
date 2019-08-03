@@ -99,6 +99,7 @@ func GenerateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 func LogInfo(args ...interface{}) {
 	logger.SetPrefix("INFO ")
 	logger.Println(args...)
+	fmt.Println(args...)
 }
 
 // LogError is used to write ERROR log

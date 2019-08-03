@@ -12,28 +12,28 @@ import (
 
 // Article Struct
 type PostDB struct {
-	ID       string `firestore:"id,omitempty"`
-	Title    string `firestore:"title,omitempty"`
-	Markdown string `firestore:"markdown,omitempty"`
-	Content  string `firestore:"content,omitempty"`
-	Slug     string `firestore:"slug,omitempty"`
-	Created  string `firestore:"created,omitempty"`
+	ID      string `firestore:"id,omitempty"`
+	Title   string `firestore:"title,omitempty"`
+	Content string `firestore:"content,omitempty"`
+	HTML    string `firestore:"html,omitempty"`
+	Slug    string `firestore:"slug,omitempty"`
+	Created string `firestore:"created,omitempty"`
 }
 
 type Post struct {
-	ID       string
-	Title    string
-	Markdown string
-	Content  template.HTML
-	Slug     string
-	Created  string
+	ID      string
+	Title   string
+	Content string
+	HTML    template.HTML
+	Slug    string
+	Created string
 }
 
 func convertPostDBToPost(pdb PostDB) (p Post) {
 	p.ID = pdb.ID
 	p.Title = pdb.Title
-	p.Markdown = pdb.Markdown
-	p.Content = template.HTML(pdb.Content)
+	p.Content = pdb.Content
+	p.HTML = template.HTML(pdb.HTML)
 	p.Slug = pdb.Slug
 	p.Created = pdb.Created
 	return
@@ -96,6 +96,7 @@ func CreatePost(p PostDB) (err error) {
 	ctx := context.Background()
 	client := getDBClient()
 
+	// TODO: check if slug is currently in database
 	_, _, err = client.Collection("posts").Add(ctx, p)
 	if err != nil {
 		log.Fatalf("Failed to create post: %v", err)
@@ -110,6 +111,7 @@ func UpdatePost(p PostDB) (err error) {
 	ctx := context.Background()
 	client := getDBClient()
 
+	// TODO: check if slug currently in database
 	pts := client.Collection("posts")
 	q := pts.Where("slug", "==", p.Slug)
 	iter := q.Documents(ctx)
@@ -124,9 +126,10 @@ func UpdatePost(p PostDB) (err error) {
 		}
 		log.Println("Come here")
 		_, err = doc.Ref.Set(ctx, map[string]interface{}{
-			"title":    p.Title,
-			"content":  p.Content,
-			"markdown": p.Markdown}, firestore.MergeAll)
+			"title":   p.Title,
+			"slug":    p.Slug,
+			"content": p.Content,
+			"html":    p.HTML}, firestore.MergeAll)
 	}
 
 	if err != nil {

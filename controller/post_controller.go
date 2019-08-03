@@ -32,8 +32,8 @@ func HandleUpdatePost(writer http.ResponseWriter, request *http.Request) {
 		var p model.PostDB
 		p.Title = request.PostFormValue("title")
 		p.Slug = request.PostFormValue("slug")
-		p.Markdown = request.PostFormValue("markdown")
 		p.Content = request.PostFormValue("content")
+		p.HTML = request.PostFormValue("html")
 
 		if err = model.UpdatePost(p); err != nil {
 			utils.LogError("Cannot update post", err)
@@ -62,8 +62,8 @@ func HandleCreatePost(writer http.ResponseWriter, request *http.Request) {
 		var p model.PostDB
 		p.Title = request.PostFormValue("title")
 		p.Slug = request.PostFormValue("slug")
-		p.Markdown = request.PostFormValue("markdown")
 		p.Content = request.PostFormValue("content")
+		p.HTML = request.PostFormValue("html")
 
 		if err = model.CreatePost(p); err != nil {
 			utils.LogError("Cannot create post", err)
@@ -84,7 +84,7 @@ func HandleReadPost(writer http.ResponseWriter, request *http.Request) {
 		if !HasSignedIn(request) {
 			utils.GenerateHTML(writer, post, "layout", "public.navbar", "public.post")
 		} else {
-			utils.GenerateHTML(writer, post, "layout", "private.navbar", "public.post")
+			utils.GenerateHTML(writer, post, "layout", "private.navbar", "private.post")
 		}
 	}
 }

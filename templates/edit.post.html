@@ -7,15 +7,18 @@
     <textarea class="justified" name="title" id="title" placeholder="Title" rows="1">{{.Title}}</textarea><br/>
     <textarea class="justified" name="slug" id="slug" placeholder="Slug" rows="1">{{.Slug}}</textarea><br/>
     <textarea class = "justified" name="content" id="content" placeholder="Content" rows="5">{{.Content}}</textarea><br/>
-    <textarea class = "justified" name="markdown" id="markdown" placeholder="Markdown" rows="5">{{.Markdown}}</textarea><br/>
-    <button class="justified" type="submit">Save</button>
+    <input type="hidden" name="html" id="html" />
+    <button class="justified" type="submit">Save</button><br/>
   </div>
 </form>
 </main>
 
-<script>
+<<script>
   $(document).ready(function(){
-    $('#content').autosize();   
+    var simplemde = new SimpleMDE({ element: $("#content")[0] });
+    simplemde.codemirror.on("change", function(){
+      $("#html").val(simplemde.options.previewRender(simplemde.value()));
+    });
 });
 </script>
 {{ end }}

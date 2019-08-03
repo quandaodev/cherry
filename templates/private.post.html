@@ -5,10 +5,12 @@
       <span class="contentpost_meta"><a href="/tag/programming/">programming</a></span>
       <h1 class="contentpost_headline post-title" itemprop="url" data-pjax="" title="{{ .Title}}">{{ .Title }}</h1>
       <section class="contentpost_articlecontent post-content">
-          {{ .HTML}}
+        {{ .HTML }}
       </section>
       <footer class="contentpost_footer post-footer">
           <section class="share">
+                <a href="/post/edit?id={{ .Slug }}" title="Edit"><i class="fa fa-edit fa-lg"></i></a>
+                <a href="/post/delete?id={{ .Slug }}" title="Delete"><i class="fa fa-trash fa-lg"></i></a>
                 <a href="https://twitter.com/share?text={{ .Title }}&amp;url=''" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title="Share on Twitter"><i class="fa fa-twitter fa-lg share_symbol twitter_symbol"></i></a>
                 <a href="https://www.facebook.com/sharer/sharer.php?u=''" onclick=" window.open(this.href, 'facebook-share','width=580,height=296');return false;" title="Share on Facebook"><i class="fa fa-facebook fa-lg share_symbol facebook_symbol"></i></a>
                 <a href="https://plus.google.com/share?url=''" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title="Share on Google+"><i class="fa fa-google-plus fa-lg share_symbol google-plus_symbol"></i></a>

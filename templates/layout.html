@@ -11,6 +11,11 @@
     <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css//simplemde.min.css">
+
+    <script src="/static/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/simplemde.min.js"></script>
   </head>
   <body>
     {{ template "navbar" . }}
@@ -20,15 +25,6 @@
       {{ template "content" . }}
       
     </div> 
-    
-    <script src="/static/js/jquery-2.1.1.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/autosize.min.js"></script>
-    <script>
-      $(document).ready(function(){
-        $('textarea').autosize();   
-      });
-</script>
   </body>
 </html>
 

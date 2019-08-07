@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/quandaodev/cherry/model"
@@ -16,7 +17,7 @@ func HandleEditPost(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get post")
 	} else if CheckAndSignIn(writer, request) {
-		utils.GenerateHTML(writer, post, "layout", "private.navbar", "edit.post")
+		utils.GenerateHTML(writer, post, "post_edit")
 	}
 }
 
@@ -45,9 +46,9 @@ func HandleUpdatePost(writer http.ResponseWriter, request *http.Request) {
 // HandleNewPost handles GET post/new to display the new post page
 func HandleNewPost(writer http.ResponseWriter, request *http.Request) {
 	utils.LogInfo("HandleNewPost() called")
-	if CheckAndSignIn(writer, request) {
-		utils.GenerateHTML(writer, nil, "layout", "private.navbar", "new.post")
-	}
+	//if CheckAndSignIn(writer, request) {
+	utils.GenerateHTML(writer, nil, "post_new")
+	//}
 }
 
 // HandleCreatePost handles POST post/create to save the new post to database
@@ -64,6 +65,7 @@ func HandleCreatePost(writer http.ResponseWriter, request *http.Request) {
 		p.Slug = request.PostFormValue("slug")
 		p.Content = request.PostFormValue("content")
 		p.HTML = request.PostFormValue("html")
+		fmt.Println(p)
 
 		if err = model.CreatePost(p); err != nil {
 			utils.LogError("Cannot create post", err)

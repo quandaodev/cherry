@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>New Post</title>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css//simplemde.min.css">
+
+    <script src="/static/js/jquery-2.1.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/simplemde.min.js"></script>
+  </head>
+  <body></body>
+    <div class="container">
+      
+        <main class="content contentpost" role="main">
+            <form role="form" action="/post/update" method="post">
+            <h1>Edit post</h1>
+            <div class="form-group">
+              <textarea class="justified" name="title" id="title" placeholder="Title" rows="1">{{.Title}}</textarea><br/>
+              <textarea class="justified" name="slug" id="slug" placeholder="Slug" rows="1">{{.Slug}}</textarea><br/>
+              <textarea class = "justified" name="content" id="content" placeholder="Content" rows="5">{{.Content}}</textarea><br/>
+              <input type="hidden" name="html" id="html" />
+              <button class="justified" type="submit">Save</button><br/>
+            </div>
+          </form>
+          </main>
+          
+          <<script>
+            $(document).ready(function(){
+              var simplemde = new SimpleMDE({ element: $("#content")[0] });
+              simplemde.codemirror.on("change", function(){
+                $("#html").val(simplemde.options.previewRender(simplemde.value()));
+              });
+          });
+          </script>
+      
+    </div> 
+  </body>
+</html>

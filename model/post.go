@@ -138,3 +138,31 @@ func UpdatePost(p PostDB) (err error) {
 
 	return
 }
+
+// UpdatePost update an article exists in the database
+func DeletePost(ID string) (err error) {
+	log.Println("DeletePost() called")
+	ctx := context.Background()
+	client := getDBClient()
+
+	pts := client.Collection("posts")
+	q := pts.Where("slug", "==", ID)
+	iter := q.Documents(ctx)
+	defer iter.Stop()
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Failed to iterate: %v", err)
+		}
+		_, err = doc.Ref.Delete(ctx)
+	}
+
+	if err != nil {
+		log.Fatalf("Failed to delete post: %v", err)
+	}
+
+	return
+}

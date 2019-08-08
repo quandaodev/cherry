@@ -90,3 +90,15 @@ func HandleReadPost(writer http.ResponseWriter, request *http.Request) {
 		}
 	}
 }
+
+// HandleDeletePost handles POST post/delete to delete the post
+func HandleDeletePost(writer http.ResponseWriter, request *http.Request) {
+	utils.LogInfo("HandleDeletePost() called")
+	params := request.URL.Query()
+	postID := params.Get("id")
+	err := model.DeletePost(postID)
+	if err != nil {
+		utils.ErrorMessage(writer, request, "Cannot delete post")
+	}
+	http.Redirect(writer, request, "/", 302)
+}

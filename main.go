@@ -35,6 +35,7 @@ func main() {
 	mux.HandleFunc("/post/create", controller.HandleCreatePost) // Save
 	mux.HandleFunc("/post/edit", controller.HandleEditPost)     // UI
 	mux.HandleFunc("/post/update", controller.HandleUpdatePost) // Edit post
+	mux.HandleFunc("/post/delete", controller.HandleDeletePost) // Delete post
 
 	// handle page
 	mux.HandleFunc("/page", controller.HandleReadPage)

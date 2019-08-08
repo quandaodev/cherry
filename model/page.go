@@ -1,11 +1,10 @@
 package model
 
 import (
-	"log"
-
 	"html/template"
 
 	"cloud.google.com/go/firestore"
+	"github.com/quandaodev/cherry/utils"
 	"golang.org/x/net/context"
 	"google.golang.org/api/iterator"
 )
@@ -33,7 +32,7 @@ func convertPageDBToPage(pdb PageDB) (p Page) {
 
 // ListPages list all pages in the database
 func ListPages() (pages []Page, err error) {
-	log.Println("ListPages() called")
+	utils.LogInfo("ListPages() called")
 	ctx := context.Background()
 	client := getDBClient()
 
@@ -45,7 +44,7 @@ func ListPages() (pages []Page, err error) {
 			break
 		}
 		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
+			utils.LogError("Failed to iterate: ", err)
 		}
 
 		var pdb PageDB
@@ -59,7 +58,7 @@ func ListPages() (pages []Page, err error) {
 
 // GetPageByID return an article matching the id
 func GetPageByID(id string) (p Page, err error) {
-	log.Println("GetPageById() called")
+	utils.LogInfo("GetPageById() called")
 	ctx := context.Background()
 	client := getDBClient()
 
@@ -74,13 +73,13 @@ func GetPageByID(id string) (p Page, err error) {
 
 // CreatePage inserts a new page to the database
 func CreatePage(p PageDB) (err error) {
-	log.Println("CreatePage() called")
+	utils.LogInfo("CreatePage() called")
 	ctx := context.Background()
 	client := getDBClient()
 
 	_, _, err = client.Collection("pages").Add(ctx, p)
 	if err != nil {
-		log.Fatalf("Failed to create page: %v", err)
+		utils.LogError("Failed to create page: %v", err)
 	}
 
 	return
@@ -88,7 +87,7 @@ func CreatePage(p PageDB) (err error) {
 
 // UpdatePage update a page exists in the database
 func UpdatePage(p PageDB) (err error) {
-	log.Println("UpdatePage() called")
+	utils.LogInfo("UpdatePage() called")
 	ctx := context.Background()
 	client := getDBClient()
 
@@ -102,7 +101,7 @@ func UpdatePage(p PageDB) (err error) {
 			break
 		}
 		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
+			utils.LogError("Failed to iterate: ", err)
 		}
 		_, err = doc.Ref.Set(ctx, map[string]interface{}{
 			"content": p.Content,
@@ -110,7 +109,7 @@ func UpdatePage(p PageDB) (err error) {
 	}
 
 	if err != nil {
-		log.Fatalf("Failed to update page: %v", err)
+		utils.LogError("Failed to update page: ", err)
 	}
 
 	return

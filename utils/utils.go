@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -38,7 +39,9 @@ func init() {
 	if err != nil {
 		log.Fatalln("Failed to open log file", err)
 	}
+	mw := io.MultiWriter(os.Stdout, file)
 	logger = log.New(file, "INFO ", log.Ldate|log.Ltime|log.Lshortfile)
+	logger.SetOutput(mw)
 }
 
 func loadConfig() {
@@ -59,19 +62,6 @@ func ErrorMessage(writer http.ResponseWriter, request *http.Request, msg string)
 	url := []string{"/err?msg=", msg}
 	http.Redirect(writer, request, strings.Join(url, ""), 302)
 }
-
-/*
-// Checks if the user is logged in and has a session, if not err is not nil
-func session(writer http.ResponseWriter, request *http.Request) (sess data.Session, err error) {
-	cookie, err := request.Cookie("_cookie")
-	if err == nil {
-		sess = data.Session{Uuid: cookie.Value}
-		if ok, _ := sess.Check(); !ok {
-			err = errors.New("Invalid session")
-		}
-	}
-	return
-}*/
 
 // ParseTemplateFiles gets in a list of file names and return a template
 func ParseTemplateFiles(filenames ...string) (t *template.Template) {
@@ -99,7 +89,6 @@ func GenerateHTML(writer http.ResponseWriter, data interface{}, filenames ...str
 func LogInfo(args ...interface{}) {
 	logger.SetPrefix("INFO ")
 	logger.Println(args...)
-	fmt.Println(args...)
 }
 
 // LogError is used to write ERROR log

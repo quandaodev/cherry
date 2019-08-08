@@ -6,6 +6,7 @@ import (
 	"html/template"
 
 	"cloud.google.com/go/firestore"
+	"github.com/quandaodev/cherry/utils"
 	"golang.org/x/net/context"
 	"google.golang.org/api/iterator"
 )
@@ -41,7 +42,7 @@ func convertPostDBToPost(pdb PostDB) (p Post) {
 
 // List all posts in the database
 func ListPosts() (posts []Post, err error) {
-	log.Println("ListPosts() called")
+	utils.LogInfo("ListPosts() called")
 	ctx := context.Background()
 	client := getDBClient()
 
@@ -67,7 +68,7 @@ func ListPosts() (posts []Post, err error) {
 
 // GetPostByID return an article matching the id
 func GetPostByID(id string) (at Post, err error) {
-	log.Println("GetPostById() called")
+	utils.LogInfo("GetPostById() called")
 	ctx := context.Background()
 	client := getDBClient()
 
@@ -81,7 +82,7 @@ func GetPostByID(id string) (at Post, err error) {
 			break
 		}
 		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
+			utils.LogError("Failed to iterate: ", err)
 		}
 		var pdb PostDB
 		doc.DataTo(&pdb)
@@ -92,14 +93,14 @@ func GetPostByID(id string) (at Post, err error) {
 
 // CreatePost inserts a new post to the database
 func CreatePost(p PostDB) (err error) {
-	log.Println("CreatePost() called")
+	utils.LogInfo("CreatePost() called")
 	ctx := context.Background()
 	client := getDBClient()
 
 	// TODO: check if slug is currently in database
 	_, _, err = client.Collection("posts").Add(ctx, p)
 	if err != nil {
-		log.Fatalf("Failed to create post: %v", err)
+		utils.LogError("Failed to create post: ", err)
 	}
 
 	return
@@ -107,7 +108,7 @@ func CreatePost(p PostDB) (err error) {
 
 // UpdatePost update an article exists in the database
 func UpdatePost(p PostDB) (err error) {
-	log.Println("UpdatePost() called")
+	utils.LogInfo("UpdatePost() called")
 	ctx := context.Background()
 	client := getDBClient()
 
@@ -122,7 +123,7 @@ func UpdatePost(p PostDB) (err error) {
 			break
 		}
 		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
+			utils.LogError("Failed to iterate: ", err)
 		}
 		log.Println("Come here")
 		_, err = doc.Ref.Set(ctx, map[string]interface{}{
@@ -133,7 +134,7 @@ func UpdatePost(p PostDB) (err error) {
 	}
 
 	if err != nil {
-		log.Fatalf("Failed to update post: %v", err)
+		utils.LogError("Failed to update post: ", err)
 	}
 
 	return
@@ -141,7 +142,7 @@ func UpdatePost(p PostDB) (err error) {
 
 // UpdatePost update an article exists in the database
 func DeletePost(ID string) (err error) {
-	log.Println("DeletePost() called")
+	utils.LogInfo("DeletePost() called")
 	ctx := context.Background()
 	client := getDBClient()
 
@@ -155,13 +156,13 @@ func DeletePost(ID string) (err error) {
 			break
 		}
 		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
+			utils.LogError("Failed to iterate: ", err)
 		}
 		_, err = doc.Ref.Delete(ctx)
 	}
 
 	if err != nil {
-		log.Fatalf("Failed to delete post: %v", err)
+		utils.LogError("Failed to delete post: ", err)
 	}
 
 	return

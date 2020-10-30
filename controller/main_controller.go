@@ -32,16 +32,16 @@ func HandleError(writer http.ResponseWriter, request *http.Request) {
 
 // HandleIndex shows the index page
 func HandleIndex(writer http.ResponseWriter, request *http.Request) {
-	articles, err := model.ListPosts()
-	fmt.Println("Size of ariticles ", len(articles))
+	posts, err := model.ListPosts()
+	fmt.Println("Size of posts ", len(posts))
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get posts")
 	} else {
 		session, _ := Store.Get(request, "cookie-name")
 		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-			utils.GenerateHTML(writer, articles, "layout", "public.navbar", "index")
+			utils.GenerateHTML(writer, posts, "layout", "public.navbar", "index")
 		} else {
-			utils.GenerateHTML(writer, articles, "layout", "private.navbar", "index")
+			utils.GenerateHTML(writer, posts, "layout", "private.navbar", "index")
 		}
 	}
 }

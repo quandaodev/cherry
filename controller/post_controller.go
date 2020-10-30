@@ -10,8 +10,8 @@ import (
 // EditPost handles GET post/new to display the edit post page
 func EditPost(writer http.ResponseWriter, request *http.Request) {
 	params := request.URL.Query()
-	postID := params.Get("id")
-	article, err := model.GetPostByID(postID)
+	slug := params.Get("id")
+	article, err := model.GetPostBySlug(slug)
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get article")
 	} else {
@@ -88,8 +88,8 @@ func CreatePost(writer http.ResponseWriter, request *http.Request) {
 // ReadPost shows the details of the thread, including the posts and the form to write a post
 func ReadPost(writer http.ResponseWriter, request *http.Request) {
 	params := request.URL.Query()
-	postID := params.Get("id")
-	article, err := model.GetPostByID(postID)
+	slug := params.Get("id")
+	article, err := model.GetPostBySlug(slug)
 	if err != nil {
 		utils.ErrorMessage(writer, request, "Cannot get article")
 	} else {

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"html/template"
 	"log"
 	"time"
 )
@@ -10,10 +10,14 @@ import (
 type Post struct {
 	ID              int
 	Title           string
+	Summary         string
 	ContentMarkDown string
 	ContentHTML     string
 	Slug            string
 	DateCreated     *time.Time
+
+	// Not in database
+	DisplayHTML template.HTML
 }
 
 // List all posts in the database
@@ -30,11 +34,10 @@ func ListPosts() (posts []Post, err error) {
 
 	for rows.Next() {
 		var post Post
-		err = rows.Scan(&post.ID, &post.Title, &post.ContentMarkDown, &post.ContentHTML, &post.Slug, &post.DateCreated)
+		err = rows.Scan(&post.ID, &post.Title, &post.Summary, &post.ContentMarkDown, &post.ContentHTML, &post.Slug, &post.DateCreated)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(post.ID, post.Title, post.ContentHTML, post.DateCreated)
 		posts = append(posts, post)
 	}
 	err = rows.Err()
@@ -46,8 +49,23 @@ func ListPosts() (posts []Post, err error) {
 }
 
 // GetPostByID return an article matching the id
-func GetPostByID(id string) (at Post, err error) {
-	log.Println("GetPostById() called")
+func GetPostBySlug(slug string) (post Post, err error) {
+	log.Println("GetPostBySlug() called")
+	client := getDBClient()
+	defer client.Close()
+
+	stmt, err := client.Prepare("select * from Post where Slug = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(slug).Scan(&post.ID, &post.Title, &post.Summary, &post.ContentMarkDown, &post.ContentHTML, &post.Slug, &post.DateCreated)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	post.DisplayHTML = template.HTML(post.ContentHTML)
 
 	return
 }

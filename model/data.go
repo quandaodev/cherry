@@ -1,26 +1,19 @@
 package model
 
 import (
+	"database/sql"
 	"log"
 
-	"golang.org/x/net/context"
-
-	"cloud.google.com/go/firestore"
-	firebase "firebase.google.com/go"
-	"google.golang.org/api/option"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func getDBClient() (client *firestore.Client) {
+func getDBClient() (client *sql.DB) {
 
-	ctx := context.Background()
-	opt := option.WithCredentialsFile("serviceAccountKey.json")
+	client, err := sql.Open("sqlite3", "./cherry.sqlite3")
 
-	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
-		log.Fatalf("error initializing firebase app: %v\n", err)
+		log.Fatalf("error connecting to database: %v\n", err)
 	}
-
-	client, err = app.Firestore(ctx)
 
 	return client
 }

@@ -1,65 +1,45 @@
 package model
 
 import (
+	"fmt"
 	"log"
-
-	"html/template"
-
-	"cloud.google.com/go/firestore"
-	"golang.org/x/net/context"
-	"google.golang.org/api/iterator"
+	"time"
 )
 
-// Article Struct
-type PostDB struct {
-	ID       string `firestore:"id,omitempty"`
-	Title    string `firestore:"title,omitempty"`
-	Markdown string `firestore:"markdown,omitempty"`
-	Content  string `firestore:"content,omitempty"`
-	Slug     string `firestore:"slug,omitempty"`
-	Created  string `firestore:"created,omitempty"`
-}
-
+// A Post structure is for an article
 type Post struct {
-	ID       string
-	Title    string
-	Markdown string
-	Content  template.HTML
-	Slug     string
-	Created  string
-}
-
-func convertPostDBToPost(pdb PostDB) (p Post) {
-	p.ID = pdb.ID
-	p.Title = pdb.Title
-	p.Markdown = pdb.Markdown
-	p.Content = template.HTML(pdb.Content)
-	p.Slug = pdb.Slug
-	p.Created = pdb.Created
-	return
+	ID              int
+	Title           string
+	ContentMarkDown string
+	ContentHTML     string
+	Slug            string
+	DateCreated     *time.Time
 }
 
 // List all posts in the database
 func ListPosts() (posts []Post, err error) {
 	log.Println("ListPosts() called")
-	ctx := context.Background()
 	client := getDBClient()
+	defer client.Close()
 
-	iter := client.Collection("posts").Documents(ctx)
-	defer iter.Stop()
-	for {
-		doc, err := iter.Next()
-		if err == iterator.Done {
-			break
-		}
+	rows, err := client.Query("select * from Post")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var post Post
+		err = rows.Scan(&post.ID, &post.Title, &post.ContentMarkDown, &post.ContentHTML, &post.Slug, &post.DateCreated)
 		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
+			log.Fatal(err)
 		}
-
-		var pdb PostDB
-		doc.DataTo(&pdb)
-
-		posts = append(posts, convertPostDBToPost(pdb))
+		fmt.Println(post.ID, post.Title, post.ContentHTML, post.DateCreated)
+		posts = append(posts, post)
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	return
@@ -68,66 +48,20 @@ func ListPosts() (posts []Post, err error) {
 // GetPostByID return an article matching the id
 func GetPostByID(id string) (at Post, err error) {
 	log.Println("GetPostById() called")
-	ctx := context.Background()
-	client := getDBClient()
 
-	ats := client.Collection("posts")
-	q := ats.Where("slug", "==", id)
-	iter := q.Documents(ctx)
-	defer iter.Stop()
-	for {
-		doc, err := iter.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
-		}
-		var pdb PostDB
-		doc.DataTo(&pdb)
-		at = convertPostDBToPost(pdb)
-	}
 	return
 }
 
 // CreatePost inserts a new post to the database
-func CreatePost(p PostDB) (err error) {
+func CreatePost(p Post) (err error) {
 	log.Println("CreatePost() called")
-	ctx := context.Background()
-	client := getDBClient()
-
-	_, _, err = client.Collection("posts").Add(ctx, p)
-	if err != nil {
-		log.Fatalf("Failed to create post: %v", err)
-	}
 
 	return
 }
 
 // UpdatePost update an article exists in the database
-func UpdatePost(p PostDB) (err error) {
+func UpdatePost(p Post) (err error) {
 	log.Println("UpdatePost() called")
-	ctx := context.Background()
-	client := getDBClient()
-
-	pts := client.Collection("posts")
-	q := pts.Where("slug", "==", p.Slug)
-	iter := q.Documents(ctx)
-	defer iter.Stop()
-	for {
-		doc, err := iter.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
-		}
-		log.Println("Come here")
-		_, err = doc.Ref.Set(ctx, map[string]interface{}{
-			"title":    p.Title,
-			"content":  p.Content,
-			"markdown": p.Markdown}, firestore.MergeAll)
-	}
 
 	if err != nil {
 		log.Fatalf("Failed to update post: %v", err)
